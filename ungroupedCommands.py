@@ -25,7 +25,7 @@ class UngroupedCommands():
         await self.client.say(msg)
 
     @commands.command(description='This is a command that calculates DM rewards')
-    async def dmxp(self, dmpcLevel, hoursPlayed, isMultishot=None):
+    async def dmxp(self, dmpcLevel, hoursPlayed, isMultishot='n'):
         hoursPlayed = commandHelpers.round_nearest_half(float(hoursPlayed))
         if any(n in isMultishot for n in commandHelpers.AFFIRMATIVE_REPLIES):
             multishotCoefficient = 1.2
