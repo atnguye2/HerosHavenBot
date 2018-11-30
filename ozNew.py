@@ -5,12 +5,10 @@ from discord.ext import commands
 # This is the token found under the https://discordapp.com/developers/applications/509871894061907970/bots
 # It it currently tied to Brad's Discord account
 
-# Debug
+# Chnage this
 with open('DEBUGTOKEN.txt', 'r') as myfile:
     DISCORD_BOT_TOKEN = myfile.read()
 
-# Live
-# DISCORD_BOT_TOKEN = 'NTA5ODcxODk0MDYxOTA3OTcw.DsUSEA.KWPIudgcPe7ciBHiMaUZcZrdMm4'
 
 
 # Requires Discord Webhooks to do anything too terribly interesting.
