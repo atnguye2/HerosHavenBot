@@ -1,14 +1,13 @@
 from discord.ext import commands
 import reactMenu as rM
 import discord
-import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from InitializeHerosHavenDataBase import Base, Vote
 
 
 # Bind the engine to the metadata of the Base class so that the
-# declaratives can be accessed through a DBSession instance
+# declarative can be accessed through a DBSession instance
 engine = create_engine('sqlite:///HeroHavenDatabase.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
@@ -19,6 +18,7 @@ class voteCommands():
     def __init__(self, client):
         self.client = client
 
+    # Create a commands group
     @commands.group(pass_context=True, description='A set of commands to help with making and voting on polls')
     async def vote(self, ctx):
         if ctx.invoked_subcommand is None:
@@ -28,8 +28,8 @@ class voteCommands():
     @commands.has_any_role('mods', 'loremasters', 'logisticians', 'techromancer')
     async def c(self, ctx):
         pollTypes = ["Staff", "Logic", "Lore", "Public"]
-        #pollChan = ['514670013706403850','509566067757285406','509566093799718932','509454369192673291']
-        pollChan = ['427846372168040452', '427846372168040452', '427846372168040452', '427846372168040452']
+        pollChan = ['514670013706403850','509566067757285406','509566093799718932','509454369192673291']
+        #pollChan = ['427846372168040452', '427846372168040452', '427846372168040452', '427846372168040452']
         embed = discord.Embed(
             title='What type of poll do you want',
             descption='What channel does this poll belong to',
@@ -39,6 +39,7 @@ class voteCommands():
         embed.add_field(name="2 "+pollTypes[1], value="Open to logic team to vote on", inline=False)
         embed.add_field(name="3 "+pollTypes[2], value="Open to lore team to vote on", inline=False)
         embed.add_field(name="4 "+pollTypes[3], value="Open to the public to vote on", inline=False)
+        # Takes input from user via menu. Menu object constructed from module downloaded off git
         askPollType = await rM.Menu(self.client).menu(ctx,
                                                       1,
                                                       embed,
@@ -60,9 +61,7 @@ class voteCommands():
             embed.add_field(name=str(c+1),
                             value=v,
                             inline=False)
-        await self.client.send_message(targetChannel, embed=embed)
-        async for msgs in self.client.logs_from(targetChannel, limit=1):
-            botMessage = msgs
+        botMessage = await self.client.send_message(targetChannel, embed=embed)
         emoji = {
             0: "0⃣",
             1: "1⃣",
@@ -76,25 +75,27 @@ class voteCommands():
             9: "9⃣",
             10: "🔟"
         }
+        # Add a reaction for every option present in the poll
         for x in range(1, len(options.content)+1):
             y = emoji[x]
             await self.client.add_reaction(botMessage, emoji=y)
-
-            newVote = Vote(
-                            voteTitle=question.content,
-                            voteCategory=pollTypes[askPollType-1],
-                            voteDescription=details.content,
-                            voteOptions="\n".join([v for v in options.content]),
-                            messageID=botMessage.id
+        # Build a new Vote object to add to the database
+        newVote = Vote( voteTitle=question.content,
+                        voteCategory=pollTypes[askPollType-1],
+                        voteDescription=details.content,
+                        voteOptions="\n".join([v for v in options.content]),
+                        messageID=botMessage.id
             )
-            session.add(newVote)
-            session.commit()
-
+        session.add(newVote)
+        session.commit()
 
     @vote.command(pass_context=True)
     @commands.has_any_role('mods', 'loremasters', 'logisticians', 'techromancer')
     async def e(self, ctx):
+        # Find all votes that have not finished. List of Vote objects.
         allVotes = session.query(Vote).filter(Vote.voteDone == 0).all()
+
+        # Build an embed for the reaction menu.
         embed = discord.Embed(
             title='Which poll do you want to tally?',
             descption='Shown below are the questions',
@@ -102,22 +103,29 @@ class voteCommands():
         )
         for c, v in enumerate(allVotes):
             embed.add_field(name=str(c+1), value=v.voteTitle, inline=False)
-            print(c,v.voteTitle)
+        # Use the reaction menu to have user select the poll.
         choice = await rM.Menu(self.client).menu(ctx, 1, embed, allVotes)
-        print(choice)
+        # Output is an int. Subtract 1 for proper indexing
         choice = allVotes[choice-1]
+        # Change the flag var in the database
         choice.voteDone = 1
+        # Find the actual vote message to create the discord message object
         pollTypes = ["Staff", "Logic", "Lore", "Public"]
         pollChan = ['427846372168040452', '427846372168040452', '427846372168040452', '427846372168040452']
         channel = self.client.get_channel(pollChan[pollTypes.index(choice.voteCategory)])
-        message = await self.client.get_message(channel, choice.messageID)
-        counts = {react.emoji: react.count for react in message.reactions}
-        print(counts)
+        voteMessage = await self.client.get_message(channel, choice.messageID)
+        # Count votes
+        counts = {react.emoji: react.count for react in voteMessage.reactions}
         winner = max(counts, key=counts.get)
+        # Change more attributes in database
         choice.voteDecision = winner
         session.commit()
-        await self.client.say("The winner is {win} {option}".format(win=str(winner),
-                                                                    option=choice.voteOptions.split('\n')[counts[winner]-1]))
+        # Announce winner in the channel command was called in. Edit the vote message and clear reactions
+        announcestr = "The winner is {win} {option}".format(win=str(winner),
+                                                            option=choice.voteOptions.split('\n')[counts[winner]-1])
+        await self.client.say(announcestr)
+        await self.client.edit_message(voteMessage, voteMessage.content + '\nThe vote has ended \n' + announcestr)
+        await self.client.clear_reactions(voteMessage)
 
 
 def setup(client):
