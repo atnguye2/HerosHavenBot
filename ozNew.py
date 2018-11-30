@@ -6,7 +6,8 @@ from discord.ext import commands
 # It it currently tied to Brad's Discord account
 
 # Debug
-DISCORD_BOT_TOKEN = 'NDkyMDE3NDY1MDI3NTkyMjAz.Dt4YGw.exS2x9R7A7e2ory4IGPOiC8aUDE'
+with open('DEBUGTOKEN.txt', 'r') as myfile:
+    DISCORD_BOT_TOKEN = myfile.read()
 
 # Live
 # DISCORD_BOT_TOKEN = 'NTA5ODcxODk0MDYxOTA3OTcw.DsUSEA.KWPIudgcPe7ciBHiMaUZcZrdMm4'
@@ -16,7 +17,7 @@ DISCORD_BOT_TOKEN = 'NDkyMDE3NDY1MDI3NTkyMjAz.Dt4YGw.exS2x9R7A7e2ory4IGPOiC8aUDE
 gamePresence = discord.Game(name="+help")
 
 client = commands.Bot(command_prefix='+', pass_context=True, description='')
-startup_extensions = ['ungroupedCommands','dtdCommands']
+startup_extensions = ['ungroupedCommands','dtdCommands','voteCommands']
 
 
 @client.event

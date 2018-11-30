@@ -1,8 +1,8 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+import datetime
 
 Base = declarative_base()
 
@@ -33,16 +33,21 @@ class User(Base):
 #     charCHA = Column(Integer)  # Character Charisma Score
 #     charSKILLS = Column(String(250))  # String that indicates proficiency. 0 = NonProf; 1 = Prof; 2 = Expertise
 
-# class Vote(Base):
-#     __tablename__ = 'docket'
-#     voteid = Column(Integer, primary_key=True)
-#     voteComplete = Column(Integer, nullable=True)
-#     voteCategory = Column(Integer)
-#     voteOptions = Column(String(2500))
+class Vote(Base):
+    __tablename__ = 'voteDocket'
+    voteid = Column(Integer, primary_key=True)
+    voteTitle = Column(String(2500))
+    voteCategory = Column(String(25))
+    voteDescription = Column(String(2500))
+    voteOptions = Column(String(2500))
+    voteTime = Column(DateTime, default=datetime.datetime.utcnow(),onupdate=datetime.datetime.utcnow())
+    voteDone = Column(Integer, default=0)
+    voteDecision = Column(Integer, nullable=True)
+    messageID = Column(String(30), nullable=True)
 
 
-# Create an engine that stores data in memory
-# sqlalchemy_example.db file.
+
+
 
 # Create an engine that stores data in the local directory's
 # HeroHavenDatabase.db file.
