@@ -25,10 +25,10 @@ class voteCommands():
             await self.client.say('Type +help vote for more help')
 
     @vote.command(pass_context=True)
-    @commands.has_any_role('mods', 'loremasters', 'logisticians', 'techromancer')
+    @commands.has_any_role('mods', 'loremasters', 'logisticians', 'techromancers')
     async def c(self, ctx):
         pollTypes = ["Staff", "Logic", "Lore", "Public"]
-        pollChan = ['514670013706403850','509566067757285406','509566093799718932','509454369192673291']
+        pollChan = ['514670013706403850', '509566067757285406', '509566093799718932', '509454369192673291']
         # pollChan = ['427846372168040452', '427846372168040452', '427846372168040452', '427846372168040452']
         embed = discord.Embed(
             title='What type of poll do you want',
@@ -90,7 +90,7 @@ class voteCommands():
         session.commit()
 
     @vote.command(pass_context=True)
-    @commands.has_any_role('mods', 'loremasters', 'logisticians', 'techromancer')
+    @commands.has_any_role('mods', 'loremasters', 'logisticians', 'techromancers')
     async def e(self, ctx):
         # Find all votes that have not finished. List of Vote objects.
         allVotes = session.query(Vote).filter(Vote.voteDone == 0).all()
@@ -111,7 +111,7 @@ class voteCommands():
         choice.voteDone = 1
         # Find the actual vote message to create the discord message object
         pollTypes = ["Staff", "Logic", "Lore", "Public"]
-        pollChan = ['427846372168040452', '427846372168040452', '427846372168040452', '427846372168040452']
+        pollChan = ['514670013706403850', '509566067757285406', '509566093799718932', '509454369192673291']
         channel = self.client.get_channel(pollChan[pollTypes.index(choice.voteCategory)])
         voteMessage = await self.client.get_message(channel, choice.messageID)
         # Count votes
@@ -139,7 +139,6 @@ class voteCommands():
                                                             option=choice.voteOptions.split('\n')[winneroption-1])
         await self.client.say(announcestr)
         await self.client.edit_message(voteMessage, voteMessage.content + '\nThe vote has ended \n' + announcestr)
-        await self.client.clear_reactions(voteMessage)
 
 
 def setup(client):

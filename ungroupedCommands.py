@@ -25,7 +25,7 @@ class UngroupedCommands():
         await self.client.say(msg)
 
     @commands.command(description='This is a command that calculates DM rewards')
-    async def dmxp(self, dmpcLevel, hoursPlayed, isMultishot=None):
+    async def dmxp(self, dmpcLevel, hoursPlayed, isMultishot='n'):
         hoursPlayed = commandHelpers.round_nearest_half(float(hoursPlayed))
         if any(n in isMultishot for n in commandHelpers.AFFIRMATIVE_REPLIES):
             multishotCoefficient = 1.2
@@ -49,17 +49,12 @@ class UngroupedCommands():
     DTD: Players: {calculatedPCdtd}, DM: {calculatedDMdtd}
     DMXP: {calculatedXP}
     DM Gold: {calculatedGP}
-    DM Res: {calculatedRes}
-    ```
-                        """
+    DM Res: {calculatedRes}```"""
         msgOut = msgOut.format(flavor=str(flavor), gameType=str(gameType), dmpcLevel=str(dmpcLevel),
                                hoursPlayed=str(hoursPlayed), calculatedPCdtd=str(calculatedPCdtd),
                                calculatedDMdtd=str(calculatedDMdtd), calculatedXP=str(calculatedXP),
                                calculatedGP=str(calculatedGP), calculatedRes=str(calculatedRes))
         await self.client.say(msgOut)
-
-        contentStr = commandHelpers.getHelpCommand()
-        await client.send_message(message.channel, content=contentStr)
 
     @commands.command(description='This is a command that adds reactions to a message', pass_context=True)
     async def react(self, ctx, numberOfOptions):
