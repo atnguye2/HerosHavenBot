@@ -25,11 +25,11 @@ class voteCommands():
             await self.client.say('Type +help vote for more help')
 
     @vote.command(pass_context=True)
-    @commands.has_any_role('mods', 'loremasters', 'logisticians', 'techromancer')
+    @commands.has_any_role('mods', 'loremasters', 'logisticians', 'techromancers')
     async def c(self, ctx):
         pollTypes = ["Staff", "Logic", "Lore", "Public"]
-        pollChan = ['514670013706403850','509566067757285406','509566093799718932','509454369192673291']
-        #pollChan = ['427846372168040452', '427846372168040452', '427846372168040452', '427846372168040452']
+        pollChan = ['514670013706403850', '509566067757285406', '509566093799718932', '509454369192673291']
+        # pollChan = ['427846372168040452', '427846372168040452', '427846372168040452', '427846372168040452']
         embed = discord.Embed(
             title='What type of poll do you want',
             descption='What channel does this poll belong to',
@@ -54,7 +54,7 @@ class voteCommands():
         options.content = options.content.split('\n');
         embed = discord.Embed(
             title=question.content,
-            descption=details.content,
+            description=details.content,
             colour=discord.Color.dark_purple()
         )
         for c, v in enumerate(options.content):
@@ -90,7 +90,7 @@ class voteCommands():
         session.commit()
 
     @vote.command(pass_context=True)
-    @commands.has_any_role('mods', 'loremasters', 'logisticians', 'techromancer')
+    @commands.has_any_role('mods', 'loremasters', 'logisticians', 'techromancers')
     async def e(self, ctx):
         # Find all votes that have not finished. List of Vote objects.
         allVotes = session.query(Vote).filter(Vote.voteDone == 0).all()
@@ -111,7 +111,7 @@ class voteCommands():
         choice.voteDone = 1
         # Find the actual vote message to create the discord message object
         pollTypes = ["Staff", "Logic", "Lore", "Public"]
-        pollChan = ['427846372168040452', '427846372168040452', '427846372168040452', '427846372168040452']
+        pollChan = ['514670013706403850', '509566067757285406', '509566093799718932', '509454369192673291']
         channel = self.client.get_channel(pollChan[pollTypes.index(choice.voteCategory)])
         voteMessage = await self.client.get_message(channel, choice.messageID)
         # Count votes
@@ -120,12 +120,25 @@ class voteCommands():
         # Change more attributes in database
         choice.voteDecision = winner
         session.commit()
+        emoji = {
+            0: "0⃣",
+            1: "1⃣",
+            2: "2⃣",
+            3: "3⃣",
+            4: "4⃣",
+            5: "5⃣",
+            6: "6⃣",
+            7: "7⃣",
+            8: "8⃣",
+            9: "9⃣",
+            10: "🔟"
+        }
+        winneroption = list(emoji.keys())[list(emoji.values()).index(max(counts, key=counts.get))]
         # Announce winner in the channel command was called in. Edit the vote message and clear reactions
         announcestr = "The winner is {win} {option}".format(win=str(winner),
-                                                            option=choice.voteOptions.split('\n')[counts[winner]-1])
+                                                            option=choice.voteOptions.split('\n')[winneroption-1])
         await self.client.say(announcestr)
         await self.client.edit_message(voteMessage, voteMessage.content + '\nThe vote has ended \n' + announcestr)
-        await self.client.clear_reactions(voteMessage)
 
 
 def setup(client):
