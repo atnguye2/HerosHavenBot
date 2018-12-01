@@ -56,6 +56,7 @@ class UngroupedCommands():
                                calculatedGP=str(calculatedGP), calculatedRes=str(calculatedRes))
         await self.client.say(msgOut)
 
+        
     @commands.command(description='This is a command that adds reactions to a message', pass_context=True)
     async def react(self, ctx, numberOfOptions):
         myChannel = ctx.message.channel
