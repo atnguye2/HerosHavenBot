@@ -8,7 +8,7 @@ SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly'
 
 # The ID and ranges used in the Oz config Google Spreadsheet.
 DMXP_CONFIG_ID = '1YqVi_n5f_JeCSQZePawLb-8XN5EtzSkWT7EuHu7Bo5U'  # e.g. this is the ugly part of the URL when looking at the Sheet in your browser
-DMXP_RANGE = 'dmxp!A2:F'
+DMXP_RANGE = 'dmxp!A1:F'
 FLAVORTOWN_RANGE = 'Flavortext!A2:C'
 
 #arrays to hold the tables read from the Google Sheets
