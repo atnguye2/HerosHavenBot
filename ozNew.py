@@ -5,7 +5,9 @@ from discord.ext import commands
 # This is the token found under the https://discordapp.com/developers/applications/509871894061907970/bots
 # It it currently tied to Brad's Discord account
 
-# Chnage this
+# Change this for production or debug...
+#TESTINGTOKEN.txt is tied to "oz testing" a bot tied to Brad's discord acct.
+#DEBUGTOKEN.txt is currently tied to Oz on the HH server
 with open('DEBUGTOKEN.txt', 'r') as myfile:
     DISCORD_BOT_TOKEN = myfile.read()
 
@@ -29,6 +31,13 @@ async def on_ready():
 async def on_message(msg):
     await client.process_commands(msg)
 
+#When a new user joins the server, add the role 'player'
+#Beware that the player role needs to be of lower hierchy than the role assigned to the bot.
+@client.event
+async def on_member_join(ctx):
+    print(ctx.name + ' has joined. Lets make them a player!'.format(client))
+    role = discord.utils.get(ctx.server.roles, name="players")
+    await client.add_roles(ctx, role)
 
 @client.command()
 async def load(extension_name: str):
