@@ -2,7 +2,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 import datetime
-# from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
@@ -12,18 +12,18 @@ class User(Base):
     # Define columns for the table User
     userid = Column(String(250), primary_key=True)  # Discord ids tend to be long save as a string to avoid overflow
     dtd = Column(Integer)  # Downtime Days
-#    user = relationship("Character", backref="parent")  # Establish a 1-Many relationship
+    user = relationship("Character", backref="parent")  # Establish a 1-Many relationship
 
 
-# class Character(Base):
-#     __tablename__ = 'Character'
-#     # Define columns for the table Character
-#     userid = Column(String(250), ForeignKey('User.userid'))  # Link a character to a user
-#     charid = Column(Integer, primary_key=True)  # Unique character id. Will autoincrement and doesn't need to be defined
-#     charname = Column(String(250))  # Character name
-#     charExp = Column(Integer)  # Character experience
-#     charGold = Column(Integer)  # Character gold
-#     charResidium = Column(Integer)  # Character residium
+class Character(Base):
+    __tablename__ = 'Character'
+    # Define columns for the table Character
+    userid = Column(String(250), ForeignKey('User.userid'))  # Link a character to a user
+    charid = Column(Integer, primary_key=True)  # Unique character id. Will autoincrement and doesn't need to be defined
+    charName = Column(String(250), nullable=False)  # Character name
+    charExp = Column(Integer, nullable=False)  # Character experience
+    charGold = Column(Integer, nullable=False)  # Character gold
+    charResiduum  = Column(Integer, nullable=False)  # Character residuum
 #     charRace = Column(String(250))  # Character race
 #     charSTR = Column(Integer)  # Character Strength Score
 #     charCON = Column(Integer)  # Character Constitution Score
@@ -51,7 +51,7 @@ class Vote(Base):
 
 # Create an engine that stores data in the local directory's
 # HeroHavenDatabase.db file.
-engine = create_engine('sqlite:///HeroHavenDatabase.db')
+engine = create_engine('sqlite:///HeroHavenDatabase.db', echo=True)
 
 # Create all tables in the engine. This is equivalent to "Create Table"
 # statements in raw SQL.

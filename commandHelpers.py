@@ -1,4 +1,12 @@
+import random
+
 AFFIRMATIVE_REPLIES = ["Y", "T", "M", "y", "t", "m"]
+
+def getRandomHexColor():
+    randomColor = "%06x" % random.randint(0, 0xFFFFFF)
+    randomColor = int(randomColor, 16)
+    randomColor = randomColor + 0x200
+    return randomColor
 
 def round_nearest_half(number):
     return round(number * 2) / 2

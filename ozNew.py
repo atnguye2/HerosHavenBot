@@ -17,7 +17,7 @@ with open('DEBUGTOKEN.txt', 'r') as myfile:
 gamePresence = discord.Game(name="+help")
 
 client = commands.Bot(command_prefix='+', pass_context=True, description='')
-startup_extensions = ['ungroupedCommands','dtdCommands','voteCommands']
+startup_extensions = ['ungroupedCommands','dtdCommands','voteCommands', 'characterCommands']
 
 
 @client.event
