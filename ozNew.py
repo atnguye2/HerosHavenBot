@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-
+from googleSheets import getWelcomeText
 
 # This is the token found under the https://discordapp.com/developers/applications/509871894061907970/bots
 # It it currently tied to Brad's Discord account
@@ -36,8 +36,10 @@ async def on_message(msg):
 @client.event
 async def on_member_join(ctx):
     print(ctx.name + ' has joined. Lets make them a player!'.format(client))
+    print(getWelcomeText())
     role = discord.utils.get(ctx.server.roles, name="players")
     await client.add_roles(ctx, role)
+    await client.send_message(ctx, getWelcomeText())
 
 @client.command()
 async def load(extension_name: str):

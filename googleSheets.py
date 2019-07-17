@@ -10,10 +10,12 @@ SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly'
 DMXP_CONFIG_ID = '1YqVi_n5f_JeCSQZePawLb-8XN5EtzSkWT7EuHu7Bo5U'  # e.g. this is the ugly part of the URL when looking at the Sheet in your browser
 DMXP_RANGE = 'dmxp!A2:F'
 FLAVORTOWN_RANGE = 'Flavortext!A2:C'
+WELCOMEINFO_CELL = 'WelcomeInformation!A2'
 
 #arrays to hold the tables read from the Google Sheets
 dmXProws = []
 flavortextRows = []
+welcomeText = ''
 
 def authorizeGoogleSheetsService():
     store = file.Storage('token.json')
@@ -56,4 +58,18 @@ def getFlavorTextRows():
             # append columns A through B, which correspond to indices 0 through 1.
             flavortextRows.append({"id": row[0], "flavortext": row[1]})
     return flavortextRows
+
+def getWelcomeText():
+    sheet = authorizeGoogleSheetsService()
+    result = sheet.values().get(spreadsheetId=DMXP_CONFIG_ID,
+                                range=WELCOMEINFO_CELL).execute()
+    values = result.get('values', [])
+    if not values:
+        print('No data found.')
+        return 0
+    else:
+        for row in values:
+            welcomeText = row[0]
+    return welcomeText
+
 #########END READING CONFIG##########
