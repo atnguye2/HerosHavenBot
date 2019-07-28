@@ -4,8 +4,8 @@ from discord.ext import commands
 from googleSheets import getWelcomeText
 
 #PRODUCTION SERVER
-CHANNELID = '601220239698427915'
-ROLEMESSAGEID = '601220264381906945'
+CHANNELID = '604908914349309953'
+ROLEMESSAGEID = '604934014402297857'
 
 # general (test server) channel id
 # #382727824001335297
