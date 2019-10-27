@@ -9,7 +9,7 @@ import googleSheets
 # Read the Oz Config Google Sheets
 dmxpRows = googleSheets.getDmXpRows()
 flavorTextRows = googleSheets.getFlavorTextRows()
-
+judgeTextRows = googleSheets.getJudgeTextRows()
 
 class UngroupedCommands():
     def __init__(self, client):
@@ -69,6 +69,12 @@ class UngroupedCommands():
             y = "REGIONAL INDICATOR SYMBOL LETTER " + y
             await self.client.add_reaction(myMessage, emoji=unicodedata.lookup(y))
 
+    @commands.command(description='This is a command created for the Liars Mask/Halloween event.')
+    async def judge(self):
+        judgement = judgeTextRows[random.randint(0, 6)]['judgetext'] #random index based on the number of options defined in the google Sheets config
+        msgOut = """{flavor}"""
+        msgOut = msgOut.format(flavor=str(judgement))
+        await self.client.say(msgOut)
 
 
 def setup(client):

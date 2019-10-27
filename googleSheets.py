@@ -11,10 +11,12 @@ DMXP_CONFIG_ID = '1YqVi_n5f_JeCSQZePawLb-8XN5EtzSkWT7EuHu7Bo5U'  # e.g. this is 
 DMXP_RANGE = 'dmxp!A2:F'
 FLAVORTOWN_RANGE = 'Flavortext!A2:C'
 WELCOMEINFO_CELL = 'WelcomeInformation!A2'
+JUDGE_RANGE = 'judge!A2:B'
 
 #arrays to hold the tables read from the Google Sheets
 dmXProws = []
 flavortextRows = []
+judgetextRows = []
 welcomeText = ''
 
 def authorizeGoogleSheetsService():
@@ -58,6 +60,22 @@ def getFlavorTextRows():
             # append columns A through B, which correspond to indices 0 through 1.
             flavortextRows.append({"id": row[0], "flavortext": row[1]})
     return flavortextRows
+
+def getJudgeTextRows():
+    sheet = authorizeGoogleSheetsService()
+    result = sheet.values().get(spreadsheetId=DMXP_CONFIG_ID,
+                                range=JUDGE_RANGE).execute()
+    values = result.get('values', [])
+
+    if not values:
+        print('No data found.')
+        return 0
+    else:
+        print("Reading from the Google Sheet's Judge Text table:")
+        for row in values:
+            # append columns A through B, which correspond to indices 0 through 1.
+            judgetextRows.append({"id": row[0], "judgetext": row[1]})
+    return judgetextRows
 
 def getWelcomeText():
     sheet = authorizeGoogleSheetsService()
