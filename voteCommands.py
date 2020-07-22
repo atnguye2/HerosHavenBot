@@ -14,7 +14,7 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-class voteCommands():
+class voteCommands(commands.Cog):
     def __init__(self, client):
         self.client = client
 

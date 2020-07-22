@@ -13,21 +13,21 @@ judgeTextRows = googleSheets.getJudgeTextRows()
 resRows = googleSheets.getResRows()
 
 
-class UngroupedCommands():
+class UngroupedCommands(commands.Cog):
     def __init__(self, client):
         self.client = client
 
     @commands.command(description='This is a command that echos the input')
-    async def echo(self, *sentence):
+    async def echo(self, ctx, *sentence):
         # Repeat what the user inputs. This is an example
         msg = ''
         for word in sentence:
             msg += word
             msg += ' '
-        await self.client.say(msg)
+        await ctx.send(msg)
 
     @commands.command(description='This is a command that calculates DM rewards')
-    async def dmxp(self, dmpcLevel, hoursPlayed, isMultishot='n'):
+    async def dmxp(self, ctx, dmpcLevel, hoursPlayed, isMultishot='n'):
         hoursPlayed = commandHelpers.round_nearest_half(float(hoursPlayed))
         if any(n in isMultishot for n in commandHelpers.AFFIRMATIVE_REPLIES):
             multishotCoefficient = 1.2
@@ -56,7 +56,7 @@ class UngroupedCommands():
                                hoursPlayed=str(hoursPlayed), calculatedPCdtd=str(calculatedPCdtd),
                                calculatedDMdtd=str(calculatedDMdtd), calculatedXP=str(calculatedXP),
                                calculatedGP=str(calculatedGP), calculatedRes=str(calculatedRes))
-        await self.client.say(msgOut)
+        await ctx.send(msgOut)
 
         
     @commands.command(description='This is a command that adds reactions to a message', pass_context=True)
@@ -69,14 +69,14 @@ class UngroupedCommands():
         for x in range(0, numberOfOptions):
             y = string.ascii_lowercase[x]
             y = "REGIONAL INDICATOR SYMBOL LETTER " + y
-            await self.client.add_reaction(myMessage, emoji=unicodedata.lookup(y))
+            await ctx.message.add_reaction(myMessage, emoji=unicodedata.lookup(y))
 
     @commands.command(description='This is a command created for the Liars Mask/Halloween event.')
-    async def judge(self):
+    async def judge(self, ctx):
         judgement = judgeTextRows[random.randint(0, 6)]['judgetext'] #random index based on the number of options defined in the google Sheets config
         msgOut = """{flavor}"""
         msgOut = msgOut.format(flavor=str(judgement))
-        await self.client.say(msgOut)
+        await ctx.send(msgOut)
 
     @commands.command(description='This is a command that calculates Residuum rewards', pass_context=True)
     async def res(self, ctx, totalXP, minpc, numPlayers=1, isMultishot='n'):
@@ -127,7 +127,7 @@ Experience Per Player: {splitXP}
 
         #embed.set_footer(text=sheetlink)
 
-        await self.client.send_message(ctx.message.channel, embed=embed)
+        await ctx.send(ctx.message.channel, embed=embed)
 
 
         #await self.client.say(msgOut)

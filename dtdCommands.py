@@ -18,7 +18,7 @@ session = DBSession()
 # session.commit()
 
 
-class dtdCommands():
+class dtdCommands(commands.Cog):
     def __init__(self, client):
         self.client = client
 
@@ -29,13 +29,13 @@ class dtdCommands():
             print("User found. Doing stuff")
             user.dtd += change
             session.commit()
-            await self.client.say("{User} now has {dtd} downtime days!".format(dtd=str(user.dtd), User=str(ctx.message.author.name)))
+            await ctx.send("{User} now has {dtd} downtime days!".format(dtd=str(user.dtd), User=str(ctx.message.author.name)))
         except sqlalchemy.orm.exc.NoResultFound:
             print("Adding User to DB")
             new_user = User(userid=str(ctx.message.author.id), dtd=change)
             session.add(new_user)
             session.commit()
-            await self.client.say("{User} now has {change} downtime days!".format(change=str(change), User=str(ctx.message.author.name)))
+            await ctx.send("{User} now has {change} downtime days!".format(change=str(change), User=str(ctx.message.author.name)))
 
 
 def setup(client):

@@ -20,7 +20,7 @@ ROLEMESSAGEID = '604934014402297857'
 # Change this for production or debug...
 #TESTINGTOKEN.txt is tied to "oz testing" a bot tied to Brad's discord acct.
 #DEBUGTOKEN.txt is currently tied to Oz on the HH server
-with open('DEBUGTOKEN.txt', 'r') as myfile:
+with open('TESTINGTOKEN.txt', 'r') as myfile:
     DISCORD_BOT_TOKEN = myfile.read()
 
 
