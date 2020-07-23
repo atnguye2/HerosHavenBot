@@ -64,12 +64,12 @@ class UngroupedCommands(commands.Cog):
         myChannel = ctx.message.channel
         print(myChannel)
         numberOfOptions = int(numberOfOptions)
-        async for msgs in self.client.logs_from(myChannel, limit=1, before=ctx.message):
+        async for msgs in myChannel.history(limit=1, before=ctx.message):
             myMessage = msgs
         for x in range(0, numberOfOptions):
             y = string.ascii_lowercase[x]
             y = "REGIONAL INDICATOR SYMBOL LETTER " + y
-            await ctx.message.add_reaction(myMessage, emoji=unicodedata.lookup(y))
+            await myMessage.add_reaction(emoji=unicodedata.lookup(y))
 
     @commands.command(description='This is a command created for the Liars Mask/Halloween event.')
     async def judge(self, ctx):

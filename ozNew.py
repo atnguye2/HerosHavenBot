@@ -5,7 +5,7 @@ from googleSheets import getWelcomeText
 
 #PRODUCTION SERVER
 CHANNELID = '604908914349309953'
-ROLEMESSAGEID = '604934014402297857'
+#ROLEMESSAGEID = '604934014402297857'
 
 # general (test server) channel id
 # #382727824001335297
@@ -13,7 +13,10 @@ ROLEMESSAGEID = '604934014402297857'
 #CHANNELID = '382727824001335297'
 #ROLEMESSAGEID = '600872091075477521'
 
-#mid = '600884478126063637'
+#New testing messageID
+#735867866167115879
+
+ROLEMESSAGEID = '735867866167115879'
 
 # This is the token found under the https://discordapp.com/developers/applications/509871894061907970/bots
 # It it currently tied to Brad's Discord account
@@ -78,7 +81,7 @@ async def on_member_join(ctx):
 async def on_reaction_add(reaction, user):
     print("a reaction add!")
     print(reaction.message.id)
-    print(client.messages)
+    #print(client.messages)
     if reaction.message.id == ROLEMESSAGEID:
         print(reaction.emoji)
         if reaction.emoji == "🎲":
