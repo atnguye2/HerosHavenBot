@@ -54,8 +54,8 @@ async def append_reaction_message(myChannelID, myMessageID):
 async def on_ready():
     #await fill_queue(CHANNELID, mid)
     print('We have logged in as {0.user}'.format(client))
-    print(discord.__version__)
-    await client.change_presence(game=gamePresence, afk=False, status=None)
+    print('We are using discord.py version ' +  discord.__version__)
+    await client.change_presence(activity=gamePresence, afk=False, status=None)
     await append_reaction_message(CHANNELID, ROLEMESSAGEID)
 
 @client.event
