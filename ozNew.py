@@ -1,22 +1,13 @@
 import discord
-import asyncio
 from discord.ext import commands
 from googleSheets import getWelcomeText
 
 #PRODUCTION SERVER
-CHANNELID = '604908914349309953'
-#ROLEMESSAGEID = '604934014402297857'
+#CHANNELID = '604908914349309953'
+#ROLEMESSAGEID = 604934014402297857
 
-# general (test server) channel id
-# #382727824001335297
-#TESTSERVER
-#CHANNELID = '382727824001335297'
-#ROLEMESSAGEID = '600872091075477521'
-
-#New testing messageID
-#735867866167115879
-
-ROLEMESSAGEID = '735867866167115879'
+#TEST SERVER
+ROLEMESSAGEID = 735867866167115879
 
 # This is the token found under the https://discordapp.com/developers/applications/509871894061907970/bots
 # It it currently tied to Brad's Discord account
@@ -27,30 +18,11 @@ with open('TESTINGTOKEN.txt', 'r') as myfile:
     DISCORD_BOT_TOKEN = myfile.read()
 
 
-
 # Requires Discord Webhooks to do anything too terribly interesting.
 gamePresence = discord.Game(name="+help")
 
 client = commands.Bot(command_prefix='+', pass_context=True, description='')
 startup_extensions = ['ungroupedCommands','dtdCommands','voteCommands', 'characterCommands']
-
-#the client won't listen for reactions on messages not in the client.messages queue. The current max size of this is 5000. To mitigate the chance that reaction message is not in the queue, we will add it every 10 minutes.
-async def append_reaction_message(myChannelID, myMessageID):
-    print("starting append_reaction_message()")
-    myChannel = client.get_channel(myChannelID)
-    myMessage = await client.get_message(myChannel, myMessageID)
-    while True:
-        print(str(len(client.messages)) + " Messages held in client.messages. Adding the Role Reaction Post now.")
-        client.messages.append(myMessage)
-        await asyncio.sleep(3600)
-    print("ending append_reaction_message")
-
-#async def fill_queue(myChannelID, myMessageID):
-#    myChannel = client.get_channel(myChannelID)
-#    myMessage = await client.get_message(myChannel, myMessageID)
-#    for x in range(5005):
-#        print(str(len(client.messages)) + " Messages held in client.messages. WOMP.")
-#        client.messages.append(myMessage)
 
 
 @client.event
@@ -59,12 +31,12 @@ async def on_ready():
     print('We have logged in as {0.user}'.format(client))
     print('We are using discord.py version ' +  discord.__version__)
     await client.change_presence(activity=gamePresence, afk=False, status=None)
-    await append_reaction_message(CHANNELID, ROLEMESSAGEID)
+    #await append_reaction_message(ROLEMESSAGEID)
+
 
 @client.event
 async def on_message(msg):
     await client.process_commands(msg)
-
 
 
 @client.event
@@ -74,53 +46,53 @@ async def on_member_join(ctx):
     await client.send_message(ctx, getWelcomeText())
 
 
-
-
-#Beware that the player role needs to be of lower hierchy than the role assigned to the bot.
+#Beware that the roles added or deleted need to be of lower hierchy than the highest role assigned to the bot.
 @client.event
-async def on_reaction_add(reaction, user):
-    print("a reaction add!")
-    print(reaction.message.id)
-    #print(client.messages)
-    if reaction.message.id == ROLEMESSAGEID:
-        print(reaction.emoji)
-        if reaction.emoji == "🎲":
-            print("OK player here 1")
-            role = discord.utils.get(user.server.roles, name="players")
-            await client.add_roles(user, role)
-        if reaction.emoji == "🏰":
-            print("OK DM here")
-            role = discord.utils.get(user.server.roles, name="DMs")
-            await client.add_roles(user, role)
-        if reaction.emoji == "🐲":
-            print("OK PF here")
-            role = discord.utils.get(user.server.roles, name="Pathfinder")
-            await client.add_roles(user, role)
-        else:
-            return
+async def on_raw_reaction_add(ctx):
+    print("a raw reaction add!")
+    if ctx.message_id == ROLEMESSAGEID:
+        roles = client.guilds[0].roles
+        member = client.guilds[0].get_member(ctx.user_id)
+        print(member.name + " has reacted to the role post with " + ctx.emoji.name)
+        if ctx.emoji.name == "🎲":
+            selected_role = 'players'
+        if ctx.emoji.name == "🏰":
+            selected_role = 'DMs'
+        if ctx.emoji.name == "🐲":
+            selected_role = 'Pathfinder'
+        print("A new " + selected_role + "!")
+        for r in roles:
+            if r.name == selected_role:
+                role_to_change = r
+                print("Found a role to add or delete!")
+                print("trying to give " + member.name + " the role of " + role_to_change.name)
+                await member.add_roles(r)
     else:
+        #raw reaction change to a message we aren't listening on.
         return
 
 @client.event
-async def on_reaction_remove(reaction, user):
-    print("a reaction remove!")
-    if reaction.message.id == ROLEMESSAGEID:
-        print(reaction.emoji)
-        if reaction.emoji == "🎲":
-            print("attempt to remove player role")
-            role = discord.utils.get(user.server.roles, name="players")
-            await client.remove_roles(user, role)
-        if reaction.emoji == "🏰":
-            print("attempt to remove DM role")
-            role = discord.utils.get(user.server.roles, name="DMs")
-            await client.remove_roles(user, role)
-        if reaction.emoji == "🐲":
-            print("attempt to remove PF role")
-            role = discord.utils.get(user.server.roles, name="Pathfinder")
-            await client.remove_roles(user, role)
-        else:
-            return
+async def on_raw_reaction_remove(ctx):
+    print("a raw reaction removal!")
+    if ctx.message_id == ROLEMESSAGEID:
+        roles = client.guilds[0].roles
+        member = client.guilds[0].get_member(ctx.user_id)
+        print(member.name + "has removed a reaction to the role post: " + ctx.emoji.name)
+        if ctx.emoji.name == "🎲":
+            selected_role = 'players'
+        if ctx.emoji.name == "🏰":
+            selected_role = 'DMs'
+        if ctx.emoji.name == "🐲":
+            selected_role = 'Pathfinder'
+        print("A departing " + selected_role + "!")
+        for r in roles:
+            if r.name == selected_role:
+                role_to_change = r
+                print("Found a role to add or delete!")
+                print("trying to relieve " + member.name + " of the role of " + role_to_change.name)
+                await member.remove_roles(r)
     else:
+        # raw reaction change to a message we aren't listening on.
         return
 
 @client.command()
