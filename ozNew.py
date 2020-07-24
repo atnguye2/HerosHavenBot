@@ -3,18 +3,17 @@ from discord.ext import commands
 from googleSheets import getWelcomeText
 
 #PRODUCTION SERVER
-#CHANNELID = '604908914349309953'
-#ROLEMESSAGEID = 604934014402297857
+ROLEMESSAGEID = 604934014402297857
 
 #TEST SERVER
-ROLEMESSAGEID = 735867866167115879
+#ROLEMESSAGEID = 735867866167115879
 
 # This is the token found under the https://discordapp.com/developers/applications/509871894061907970/bots
 # It it currently tied to Brad's Discord account
 # Change this for production or debug...
 #TESTINGTOKEN.txt is tied to "oz testing" a bot tied to Brad's discord acct.
 #DEBUGTOKEN.txt is currently tied to Oz on the HH server
-with open('TESTINGTOKEN.txt', 'r') as myfile:
+with open('DEBUGTOKEN.txt', 'r') as myfile:
     DISCORD_BOT_TOKEN = myfile.read()
 
 
@@ -27,11 +26,9 @@ startup_extensions = ['ungroupedCommands','dtdCommands','voteCommands', 'charact
 
 @client.event
 async def on_ready():
-    #await fill_queue(CHANNELID, mid)
     print('We have logged in as {0.user}'.format(client))
     print('We are using discord.py version ' +  discord.__version__)
     await client.change_presence(activity=gamePresence, afk=False, status=None)
-    #await append_reaction_message(ROLEMESSAGEID)
 
 
 @client.event
@@ -41,9 +38,8 @@ async def on_message(msg):
 
 @client.event
 async def on_member_join(ctx):
-    print(ctx.name + ' has joined. Lets make them a player!'.format(client))
     print(getWelcomeText())
-    await client.send_message(ctx, getWelcomeText())
+    await ctx.send(getWelcomeText())
 
 
 #Beware that the roles added or deleted need to be of lower hierchy than the highest role assigned to the bot.
@@ -71,6 +67,7 @@ async def on_raw_reaction_add(ctx):
         #raw reaction change to a message we aren't listening on.
         return
 
+
 @client.event
 async def on_raw_reaction_remove(ctx):
     print("a raw reaction removal!")
@@ -94,6 +91,7 @@ async def on_raw_reaction_remove(ctx):
     else:
         # raw reaction change to a message we aren't listening on.
         return
+
 
 @client.command()
 async def load(extension_name: str):
