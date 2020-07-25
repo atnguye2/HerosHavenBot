@@ -37,6 +37,19 @@ class dtdCommands(commands.Cog):
             session.commit()
             await ctx.send("{User} now has {change} downtime days!".format(change=str(change), User=str(ctx.message.author.name)))
 
+    @commands.command(description = 'This is a command to track creatures left with one hp.', pass_context=True)
+    async def ohp(self, ctx, change: int = 0):
+        try:
+            user = session.query(User).filter(User.userid == str(ctx.message.author.id)).one()
+            print("User found. Doing stuff")
+            user.ohp += change
+            await ctx.send("{User} now has {ohp} one hit point creatures!".format(ohp=str(user.ohp), User=str(ctx.message.author.name)))
+        except:
+            print("Adding User to DB")
+            new_user = User(userid=str(ctx.message.author.id), ohp=change)
+            session.add(new_user)
+            session.commit()
+            await ctx.send("{User} now has {change} one hit point creatures!".format(change=str(change), User=str(ctx.message.author.name)))
 
 def setup(client):
     client.add_cog(dtdCommands(client))

@@ -12,6 +12,7 @@ class User(Base):
     # Define columns for the table User
     userid = Column(String(250), primary_key=True)  # Discord ids tend to be long save as a string to avoid overflow
     dtd = Column(Integer)  # Downtime Days
+    ohp = Column(Integer, nullable=False)  # one hp creatures
     user = relationship("Character", backref="parent")  # Establish a 1-Many relationship
 
 
