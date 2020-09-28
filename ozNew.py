@@ -56,6 +56,13 @@ async def on_raw_reaction_add(ctx):
             selected_role = 'DMs'
         if ctx.emoji.name == "🐲":
             selected_role = 'Pathfinder'
+        if ctx.emoji.name == "📝":
+            selected_role = 'play by post'
+        if ctx.emoji.name == "🔍":
+            selected_role = 'looking for game'
+        if ctx.emoji.name ==  "🎭":
+            selected_role = 'roleplay'
+
         print("A new " + selected_role + "!")
         for r in roles:
             if r.name == selected_role:
