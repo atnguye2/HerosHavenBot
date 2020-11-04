@@ -20,7 +20,11 @@ with open('DEBUGTOKEN.txt', 'r') as myfile:
 # Requires Discord Webhooks to do anything too terribly interesting.
 gamePresence = discord.Game(name="+help")
 
-client = commands.Bot(command_prefix='+', pass_context=True, description='')
+#Intents.members is required for on_member_join() event.
+intnts = discord.Intents.default()
+intnts.members = True
+
+client = commands.Bot(command_prefix='+', pass_context=True, description='', intents=intnts)
 startup_extensions = ['ungroupedCommands','dtdCommands','voteCommands', 'characterCommands']
 
 
@@ -47,8 +51,9 @@ async def on_member_join(ctx):
 async def on_raw_reaction_add(ctx):
     print("a raw reaction add!")
     if ctx.message_id == ROLEMESSAGEID:
-        roles = client.guilds[0].roles
-        member = client.guilds[0].get_member(ctx.user_id)
+        guild = client.get_guild(ctx.guild_id)
+        roles = guild.roles
+        member = ctx.member
         print(member.name + " has reacted to the role post with " + ctx.emoji.name)
         if ctx.emoji.name == "🎲":
             selected_role = 'players'
@@ -79,8 +84,9 @@ async def on_raw_reaction_add(ctx):
 async def on_raw_reaction_remove(ctx):
     print("a raw reaction removal!")
     if ctx.message_id == ROLEMESSAGEID:
-        roles = client.guilds[0].roles
-        member = client.guilds[0].get_member(ctx.user_id)
+        guild = client.get_guild(ctx.guild_id)
+        roles = guild.roles
+        member = await guild.fetch_member(ctx.user_id)
         print(member.name + "has removed a reaction to the role post: " + ctx.emoji.name)
         if ctx.emoji.name == "🎲":
             selected_role = 'players'
@@ -88,6 +94,12 @@ async def on_raw_reaction_remove(ctx):
             selected_role = 'DMs'
         if ctx.emoji.name == "🐲":
             selected_role = 'Pathfinder'
+        if ctx.emoji.name == "📝":
+            selected_role = 'play by post'
+        if ctx.emoji.name == "🔍":
+            selected_role = 'looking for game'
+        if ctx.emoji.name == "🎭":
+            selected_role = 'roleplay'
         print("A departing " + selected_role + "!")
         for r in roles:
             if r.name == selected_role:
