@@ -3,13 +3,18 @@ from discord.ext import commands
 from googleSheets import getWelcomeText
 
 #PRODUCTION SERVER
-ROLEMESSAGEID = 604934014402297857
+#New introductory rules post 784671120338976769
+#5e rules post 784671578763821056
+#pf rules post 784649797101158416
+#Original ROLEMESSAGEID = 604934014402297857
+
+roleMessagesList = [604934014402297857, 784671120338976769, 784671578763821056, 784649797101158416]
 
 #TEST SERVER
-#ROLEMESSAGEID = 735867866167115879
+#ROLEMESSAGEID = 785227588527587348
 
 # This is the token found under the https://discordapp.com/developers/applications/509871894061907970/bots
-# It it currently tied to Brad's Discord account
+# It it currently tied to Asuperbnames's Discord account
 # Change this for production or debug...
 #TESTINGTOKEN.txt is tied to "oz testing" a bot tied to Brad's discord acct.
 #DEBUGTOKEN.txt is currently tied to Oz on the HH server
@@ -50,23 +55,27 @@ async def on_member_join(ctx):
 @client.event
 async def on_raw_reaction_add(ctx):
     print("a raw reaction add!")
-    if ctx.message_id == ROLEMESSAGEID:
+    if ctx.message_id in roleMessagesList:
         guild = client.get_guild(ctx.guild_id)
         roles = guild.roles
         member = ctx.member
         print(member.name + " has reacted to the role post with " + ctx.emoji.name)
         if ctx.emoji.name == "🎲":
-            selected_role = 'players'
-        if ctx.emoji.name == "🏰":
-            selected_role = 'DMs'
-        if ctx.emoji.name == "🐲":
+            selected_role = '5e'
+        if ctx.emoji.name == "🛤️":
             selected_role = 'Pathfinder'
         if ctx.emoji.name == "📝":
             selected_role = 'play by post'
-        if ctx.emoji.name == "🔍":
-            selected_role = 'looking for game'
         if ctx.emoji.name ==  "🎭":
             selected_role = 'roleplay'
+        if ctx.emoji.name == "🕴️":
+            selected_role = 'pf roleplay'
+        if ctx.emoji.name == "🗣️":
+            selected_role = '5e roleplay'
+        if ctx.emoji.name == "🦉":
+            selected_role = 'Observer'
+        if ctx.emoji.name == "⁉":
+            selected_role = 'looking for game'
 
         print("A new " + selected_role + "!")
         for r in roles:
@@ -83,23 +92,27 @@ async def on_raw_reaction_add(ctx):
 @client.event
 async def on_raw_reaction_remove(ctx):
     print("a raw reaction removal!")
-    if ctx.message_id == ROLEMESSAGEID:
+    if ctx.message_id in roleMessagesList:
         guild = client.get_guild(ctx.guild_id)
         roles = guild.roles
         member = await guild.fetch_member(ctx.user_id)
         print(member.name + "has removed a reaction to the role post: " + ctx.emoji.name)
         if ctx.emoji.name == "🎲":
-            selected_role = 'players'
-        if ctx.emoji.name == "🏰":
-            selected_role = 'DMs'
-        if ctx.emoji.name == "🐲":
+            selected_role = '5e'
+        if ctx.emoji.name == "🛤️":
             selected_role = 'Pathfinder'
         if ctx.emoji.name == "📝":
             selected_role = 'play by post'
-        if ctx.emoji.name == "🔍":
-            selected_role = 'looking for game'
-        if ctx.emoji.name == "🎭":
+        if ctx.emoji.name ==  "🎭":
             selected_role = 'roleplay'
+        if ctx.emoji.name == "🕴️":
+            selected_role = 'pf roleplay'
+        if ctx.emoji.name == "🗣️":
+            selected_role = '5e roleplay'
+        if ctx.emoji.name == "🦉":
+            selected_role = 'Observer'
+        if ctx.emoji.name == "⁉":
+            selected_role = 'looking for game'
         print("A departing " + selected_role + "!")
         for r in roles:
             if r.name == selected_role:

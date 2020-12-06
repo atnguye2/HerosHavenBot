@@ -11,6 +11,8 @@ dmxpRows = googleSheets.getDmXpRows()
 flavorTextRows = googleSheets.getFlavorTextRows()
 judgeTextRows = googleSheets.getJudgeTextRows()
 resRows = googleSheets.getResRows()
+pfxpRows = googleSheets.getPfXpRows()
+
 
 
 class UngroupedCommands(commands.Cog):
@@ -78,7 +80,7 @@ class UngroupedCommands(commands.Cog):
         msgOut = msgOut.format(flavor=str(judgement))
         await ctx.send(msgOut)
 
-    @commands.command(description='This is a command that calculates Residuum rewards', pass_context=True)
+    @commands.command(description='This is a command that calculates Residuum rewards for 5e games', pass_context=True)
     async def res(self, ctx, totalXP, minpc, numPlayers=1, isMultishot='n'):
         if any(n in isMultishot for n in commandHelpers.AFFIRMATIVE_REPLIES):
             multishotCoefficient = 1.2
@@ -129,9 +131,25 @@ Experience Per Player: {splitXP}
 
         await ctx.send(ctx.message.channel, embed=embed)
 
-
-        #await self.client.say(msgOut)
-
+    @commands.command(description='This is a command that calculates Pathfinder session rewards')
+    async def pfxp(self, ctx, pcLevel, hoursPlayed, difficultyCoefficient=1.0):
+        hoursPlayed = commandHelpers.round_nearest_half(float(hoursPlayed))
+        print("difficultyCoefficient = " + str(difficultyCoefficient))
+        selectedRow = (pfxpRows[int(pcLevel)])
+        calculatedXP = int(selectedRow['xpHr']) * hoursPlayed * difficultyCoefficient
+        calculatedXP = int(calculatedXP)
+        calculatedGP = int(selectedRow['gpHr']) * hoursPlayed * difficultyCoefficient
+        calculatedGP = int(calculatedGP)
+        msgOut = """    
+    ```md
+    Pathfinder one shot rewards for a level {pcLevel} character, adjusted to {hoursPlayed} hours played.
+    Difficulty Modifier: {difficultyCoefficient}
+    XP: {calculatedXP}
+    Gold: {calculatedGP}```"""
+        msgOut = msgOut.format(difficultyCoefficient=str(difficultyCoefficient), pcLevel=str(pcLevel),
+                               hoursPlayed=str(hoursPlayed), calculatedXP=str(calculatedXP),
+                               calculatedGP=str(calculatedGP))
+        await ctx.send(msgOut)
 
 def setup(client):
     client.add_cog(UngroupedCommands(client))

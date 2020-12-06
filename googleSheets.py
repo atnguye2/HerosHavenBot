@@ -13,13 +13,15 @@ FLAVORTOWN_RANGE = 'Flavortext!A2:C'
 WELCOMEINFO_CELL = 'WelcomeInformation!A2'
 JUDGE_RANGE = 'judge!A2:B'
 RES_RANGE = 'res!A2:D'
+PFXP_RANGE = 'pfxp!A2:C'
 
-#arrays to hold the tables read from the Google Sheets
+#variables to hold the tables read from the Google Sheets
 dmXProws = []
 flavortextRows = []
 judgetextRows = []
 welcomeText = ''
 resRows = []
+pfXProws = []
 
 def authorizeGoogleSheetsService():
     store = file.Storage('token.json')
@@ -46,6 +48,22 @@ def getDmXpRows():
             # append columns A through D, which correspond to indices 0 through 3.
             dmXProws.append({"level": row[0], "xpHr": row[1], "gpHr": row[2], "resHr": row[3]})
     return dmXProws
+
+def getPfXpRows():
+    sheet = authorizeGoogleSheetsService()
+    result = sheet.values().get(spreadsheetId=DMXP_CONFIG_ID,
+                                range=PFXP_RANGE).execute()
+    values = result.get('values', [])
+    if not values:
+        print('No data found.')
+        return 0
+    else:
+        print("Reading from the Google Sheet's DMXP Table:")
+        for row in values:
+            # append columns A through C, which correspond to indices 0 through 2.
+            pfXProws.append({"level": row[0], "xpHr": row[1], "gpHr": row[2]})
+    return pfXProws
+
 
 def getFlavorTextRows():
     sheet = authorizeGoogleSheetsService()
