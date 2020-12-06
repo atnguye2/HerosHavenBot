@@ -59,6 +59,7 @@ async def on_raw_reaction_add(ctx):
         guild = client.get_guild(ctx.guild_id)
         roles = guild.roles
         member = ctx.member
+        selected_role = 'nothing selected'
         print(member.name + " has reacted to the role post with " + ctx.emoji.name)
         if ctx.emoji.name == "🎲":
             selected_role = '5e'
@@ -74,7 +75,7 @@ async def on_raw_reaction_add(ctx):
             selected_role = '5e roleplay'
         if ctx.emoji.name == "🦉":
             selected_role = 'Observer'
-        if ctx.emoji.name == "⁉":
+        if ctx.emoji.name == "🧙":
             selected_role = 'looking for game'
 
         print("A new " + selected_role + "!")
@@ -111,8 +112,9 @@ async def on_raw_reaction_remove(ctx):
             selected_role = '5e roleplay'
         if ctx.emoji.name == "🦉":
             selected_role = 'Observer'
-        if ctx.emoji.name == "⁉":
+        if ctx.emoji.name == "🧙":
             selected_role = 'looking for game'
+
         print("A departing " + selected_role + "!")
         for r in roles:
             if r.name == selected_role:
